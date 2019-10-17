@@ -1,0 +1,2719 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "        <script type=\"text/javascript\">\n",
+       "        window.PlotlyConfig = {MathJaxConfig: 'local'};\n",
+       "        if (window.MathJax) {MathJax.Hub.Config({SVG: {font: \"STIX-Web\"}});}\n",
+       "        if (typeof require !== 'undefined') {\n",
+       "        require.undef(\"plotly\");\n",
+       "        requirejs.config({\n",
+       "            paths: {\n",
+       "                'plotly': ['https://cdn.plot.ly/plotly-latest.min']\n",
+       "            }\n",
+       "        });\n",
+       "        require(['plotly'], function(Plotly) {\n",
+       "            window._Plotly = Plotly;\n",
+       "        });\n",
+       "        }\n",
+       "        </script>\n",
+       "        "
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import plotly as py\n",
+    "import plotly.graph_objs as go   \n",
+    "from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot\n",
+    "init_notebook_mode(connected=True) #this is to diplay figures in notebook\n",
+    "import plotly as py\n",
+    "import plotly.graph_objs as go\n",
+    "from plotly.graph_objs import*"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>Unnamed: 0</th>\n",
+       "      <th>state</th>\n",
+       "      <th>state_postal</th>\n",
+       "      <th>state_fips</th>\n",
+       "      <th>state_icpsr</th>\n",
+       "      <th>county_name</th>\n",
+       "      <th>county_fips</th>\n",
+       "      <th>county_ansi</th>\n",
+       "      <th>county_lat</th>\n",
+       "      <th>county_long</th>\n",
+       "      <th>...</th>\n",
+       "      <th>candidate</th>\n",
+       "      <th>candidate_normalized</th>\n",
+       "      <th>office</th>\n",
+       "      <th>district</th>\n",
+       "      <th>writein</th>\n",
+       "      <th>party</th>\n",
+       "      <th>mode</th>\n",
+       "      <th>votes</th>\n",
+       "      <th>candidate_fec</th>\n",
+       "      <th>candidate_fec_name</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>1849170</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Hillary Clinton</td>\n",
+       "      <td>clinton</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>democratic</td>\n",
+       "      <td>total</td>\n",
+       "      <td>784</td>\n",
+       "      <td>P00003392</td>\n",
+       "      <td>CLINTON, HILLARY RODHAM / TIMOTHY MICHAEL KAINE</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>1849171</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Gary Johnson</td>\n",
+       "      <td>johnson</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>libertarian</td>\n",
+       "      <td>total</td>\n",
+       "      <td>32</td>\n",
+       "      <td>P60012234</td>\n",
+       "      <td>JOHNSON, JOHN FITZGERALD MR.</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>1849172</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Jill Stein</td>\n",
+       "      <td>stein</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>green</td>\n",
+       "      <td>total</td>\n",
+       "      <td>8</td>\n",
+       "      <td>P20003984</td>\n",
+       "      <td>STEIN, JILL</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>1849173</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Donald Trump</td>\n",
+       "      <td>trump</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>republican</td>\n",
+       "      <td>total</td>\n",
+       "      <td>644</td>\n",
+       "      <td>P80001571</td>\n",
+       "      <td>TRUMP, DONALD J. / MICHAEL R. PENCE</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>1849174</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>[Write-in]</td>\n",
+       "      <td>in</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>True</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>total</td>\n",
+       "      <td>3</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>5</th>\n",
+       "      <td>1849175</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Evan McMullin</td>\n",
+       "      <td>mcmullin</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>independent</td>\n",
+       "      <td>total</td>\n",
+       "      <td>16</td>\n",
+       "      <td>P60022654</td>\n",
+       "      <td>MCMULLIN, EVAN / MINDY FINN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>6</th>\n",
+       "      <td>1849176</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Hillary Clinton</td>\n",
+       "      <td>clinton</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>democratic</td>\n",
+       "      <td>total</td>\n",
+       "      <td>3</td>\n",
+       "      <td>P00003392</td>\n",
+       "      <td>CLINTON, HILLARY RODHAM / TIMOTHY MICHAEL KAINE</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>7</th>\n",
+       "      <td>1849177</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Gary Johnson</td>\n",
+       "      <td>johnson</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>libertarian</td>\n",
+       "      <td>total</td>\n",
+       "      <td>2</td>\n",
+       "      <td>P60012234</td>\n",
+       "      <td>JOHNSON, JOHN FITZGERALD MR.</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>8</th>\n",
+       "      <td>1849178</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Jill Stein</td>\n",
+       "      <td>stein</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>green</td>\n",
+       "      <td>total</td>\n",
+       "      <td>0</td>\n",
+       "      <td>P20003984</td>\n",
+       "      <td>STEIN, JILL</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>9</th>\n",
+       "      <td>1849179</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Donald Trump</td>\n",
+       "      <td>trump</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>republican</td>\n",
+       "      <td>total</td>\n",
+       "      <td>1</td>\n",
+       "      <td>P80001571</td>\n",
+       "      <td>TRUMP, DONALD J. / MICHAEL R. PENCE</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>10</th>\n",
+       "      <td>1849180</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>[Write-in]</td>\n",
+       "      <td>in</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>True</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>total</td>\n",
+       "      <td>0</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>11</th>\n",
+       "      <td>1849181</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Evan McMullin</td>\n",
+       "      <td>mcmullin</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>independent</td>\n",
+       "      <td>total</td>\n",
+       "      <td>0</td>\n",
+       "      <td>P60022654</td>\n",
+       "      <td>MCMULLIN, EVAN / MINDY FINN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>12</th>\n",
+       "      <td>1849182</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Hillary Clinton</td>\n",
+       "      <td>clinton</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>democratic</td>\n",
+       "      <td>total</td>\n",
+       "      <td>444</td>\n",
+       "      <td>P00003392</td>\n",
+       "      <td>CLINTON, HILLARY RODHAM / TIMOTHY MICHAEL KAINE</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>13</th>\n",
+       "      <td>1849183</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Gary Johnson</td>\n",
+       "      <td>johnson</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>libertarian</td>\n",
+       "      <td>total</td>\n",
+       "      <td>26</td>\n",
+       "      <td>P60012234</td>\n",
+       "      <td>JOHNSON, JOHN FITZGERALD MR.</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>14</th>\n",
+       "      <td>1849184</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Jill Stein</td>\n",
+       "      <td>stein</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>green</td>\n",
+       "      <td>total</td>\n",
+       "      <td>7</td>\n",
+       "      <td>P20003984</td>\n",
+       "      <td>STEIN, JILL</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>15</th>\n",
+       "      <td>1849185</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Donald Trump</td>\n",
+       "      <td>trump</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>republican</td>\n",
+       "      <td>total</td>\n",
+       "      <td>1188</td>\n",
+       "      <td>P80001571</td>\n",
+       "      <td>TRUMP, DONALD J. / MICHAEL R. PENCE</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>16</th>\n",
+       "      <td>1849186</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>[Write-in]</td>\n",
+       "      <td>in</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>True</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>total</td>\n",
+       "      <td>5</td>\n",
+       "      <td>NaN</td>\n",
+       "      <td>NaN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>17</th>\n",
+       "      <td>1849187</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Evan McMullin</td>\n",
+       "      <td>mcmullin</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>independent</td>\n",
+       "      <td>total</td>\n",
+       "      <td>10</td>\n",
+       "      <td>P60022654</td>\n",
+       "      <td>MCMULLIN, EVAN / MINDY FINN</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>18</th>\n",
+       "      <td>1849188</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Hillary Clinton</td>\n",
+       "      <td>clinton</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>democratic</td>\n",
+       "      <td>total</td>\n",
+       "      <td>175</td>\n",
+       "      <td>P00003392</td>\n",
+       "      <td>CLINTON, HILLARY RODHAM / TIMOTHY MICHAEL KAINE</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>19</th>\n",
+       "      <td>1849189</td>\n",
+       "      <td>Virginia</td>\n",
+       "      <td>VA</td>\n",
+       "      <td>51</td>\n",
+       "      <td>40</td>\n",
+       "      <td>Accomack County</td>\n",
+       "      <td>51001.0</td>\n",
+       "      <td>1480091.0</td>\n",
+       "      <td>37.76594</td>\n",
+       "      <td>-75.75781</td>\n",
+       "      <td>...</td>\n",
+       "      <td>Gary Johnson</td>\n",
+       "      <td>johnson</td>\n",
+       "      <td>US President</td>\n",
+       "      <td>statewide</td>\n",
+       "      <td>False</td>\n",
+       "      <td>libertarian</td>\n",
+       "      <td>total</td>\n",
+       "      <td>13</td>\n",
+       "      <td>P60012234</td>\n",
+       "      <td>JOHNSON, JOHN FITZGERALD MR.</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "<p>20 rows × 22 columns</p>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "    Unnamed: 0     state state_postal  state_fips  state_icpsr  \\\n",
+       "0      1849170  Virginia           VA          51           40   \n",
+       "1      1849171  Virginia           VA          51           40   \n",
+       "2      1849172  Virginia           VA          51           40   \n",
+       "3      1849173  Virginia           VA          51           40   \n",
+       "4      1849174  Virginia           VA          51           40   \n",
+       "5      1849175  Virginia           VA          51           40   \n",
+       "6      1849176  Virginia           VA          51           40   \n",
+       "7      1849177  Virginia           VA          51           40   \n",
+       "8      1849178  Virginia           VA          51           40   \n",
+       "9      1849179  Virginia           VA          51           40   \n",
+       "10     1849180  Virginia           VA          51           40   \n",
+       "11     1849181  Virginia           VA          51           40   \n",
+       "12     1849182  Virginia           VA          51           40   \n",
+       "13     1849183  Virginia           VA          51           40   \n",
+       "14     1849184  Virginia           VA          51           40   \n",
+       "15     1849185  Virginia           VA          51           40   \n",
+       "16     1849186  Virginia           VA          51           40   \n",
+       "17     1849187  Virginia           VA          51           40   \n",
+       "18     1849188  Virginia           VA          51           40   \n",
+       "19     1849189  Virginia           VA          51           40   \n",
+       "\n",
+       "        county_name  county_fips  county_ansi  county_lat  county_long  ...  \\\n",
+       "0   Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "1   Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "2   Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "3   Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "4   Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "5   Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "6   Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "7   Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "8   Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "9   Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "10  Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "11  Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "12  Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "13  Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "14  Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "15  Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "16  Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "17  Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "18  Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "19  Accomack County      51001.0    1480091.0    37.76594    -75.75781  ...   \n",
+       "\n",
+       "          candidate candidate_normalized        office   district writein  \\\n",
+       "0   Hillary Clinton              clinton  US President  statewide   False   \n",
+       "1      Gary Johnson              johnson  US President  statewide   False   \n",
+       "2        Jill Stein                stein  US President  statewide   False   \n",
+       "3      Donald Trump                trump  US President  statewide   False   \n",
+       "4        [Write-in]                   in  US President  statewide    True   \n",
+       "5     Evan McMullin             mcmullin  US President  statewide   False   \n",
+       "6   Hillary Clinton              clinton  US President  statewide   False   \n",
+       "7      Gary Johnson              johnson  US President  statewide   False   \n",
+       "8        Jill Stein                stein  US President  statewide   False   \n",
+       "9      Donald Trump                trump  US President  statewide   False   \n",
+       "10       [Write-in]                   in  US President  statewide    True   \n",
+       "11    Evan McMullin             mcmullin  US President  statewide   False   \n",
+       "12  Hillary Clinton              clinton  US President  statewide   False   \n",
+       "13     Gary Johnson              johnson  US President  statewide   False   \n",
+       "14       Jill Stein                stein  US President  statewide   False   \n",
+       "15     Donald Trump                trump  US President  statewide   False   \n",
+       "16       [Write-in]                   in  US President  statewide    True   \n",
+       "17    Evan McMullin             mcmullin  US President  statewide   False   \n",
+       "18  Hillary Clinton              clinton  US President  statewide   False   \n",
+       "19     Gary Johnson              johnson  US President  statewide   False   \n",
+       "\n",
+       "          party   mode votes candidate_fec  \\\n",
+       "0    democratic  total   784     P00003392   \n",
+       "1   libertarian  total    32     P60012234   \n",
+       "2         green  total     8     P20003984   \n",
+       "3    republican  total   644     P80001571   \n",
+       "4           NaN  total     3           NaN   \n",
+       "5   independent  total    16     P60022654   \n",
+       "6    democratic  total     3     P00003392   \n",
+       "7   libertarian  total     2     P60012234   \n",
+       "8         green  total     0     P20003984   \n",
+       "9    republican  total     1     P80001571   \n",
+       "10          NaN  total     0           NaN   \n",
+       "11  independent  total     0     P60022654   \n",
+       "12   democratic  total   444     P00003392   \n",
+       "13  libertarian  total    26     P60012234   \n",
+       "14        green  total     7     P20003984   \n",
+       "15   republican  total  1188     P80001571   \n",
+       "16          NaN  total     5           NaN   \n",
+       "17  independent  total    10     P60022654   \n",
+       "18   democratic  total   175     P00003392   \n",
+       "19  libertarian  total    13     P60012234   \n",
+       "\n",
+       "                                 candidate_fec_name  \n",
+       "0   CLINTON, HILLARY RODHAM / TIMOTHY MICHAEL KAINE  \n",
+       "1                      JOHNSON, JOHN FITZGERALD MR.  \n",
+       "2                                       STEIN, JILL  \n",
+       "3               TRUMP, DONALD J. / MICHAEL R. PENCE  \n",
+       "4                                               NaN  \n",
+       "5                       MCMULLIN, EVAN / MINDY FINN  \n",
+       "6   CLINTON, HILLARY RODHAM / TIMOTHY MICHAEL KAINE  \n",
+       "7                      JOHNSON, JOHN FITZGERALD MR.  \n",
+       "8                                       STEIN, JILL  \n",
+       "9               TRUMP, DONALD J. / MICHAEL R. PENCE  \n",
+       "10                                              NaN  \n",
+       "11                      MCMULLIN, EVAN / MINDY FINN  \n",
+       "12  CLINTON, HILLARY RODHAM / TIMOTHY MICHAEL KAINE  \n",
+       "13                     JOHNSON, JOHN FITZGERALD MR.  \n",
+       "14                                      STEIN, JILL  \n",
+       "15              TRUMP, DONALD J. / MICHAEL R. PENCE  \n",
+       "16                                              NaN  \n",
+       "17                      MCMULLIN, EVAN / MINDY FINN  \n",
+       "18  CLINTON, HILLARY RODHAM / TIMOTHY MICHAEL KAINE  \n",
+       "19                     JOHNSON, JOHN FITZGERALD MR.  \n",
+       "\n",
+       "[20 rows x 22 columns]"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "df = pd.read_csv('../00 resources/Virginia.csv')\n",
+    "df.head(20)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "candidate\n",
+       "Donald Trump       657.052729\n",
+       "Evan McMullin       20.116859\n",
+       "Gary Johnson        43.951691\n",
+       "Hillary Clinton    735.786483\n",
+       "Jill Stein          10.312687\n",
+       "[Write-in]          12.532120\n",
+       "Name: votes, dtype: float64"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "results = df.groupby('candidate')['votes'].mean()\n",
+    "results"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[657.0527293   20.11685895  43.95169082 735.78648348  10.31268657\n",
+      "  12.53212031]\n",
+      "Index(['Donald Trump', 'Evan McMullin', 'Gary Johnson', 'Hillary Clinton',\n",
+      "       'Jill Stein', '[Write-in]'],\n",
+      "      dtype='object', name='candidate')\n",
+      "657.0527292981805\n",
+      "20.11685895050242\n",
+      "Donald Trump\n",
+      "Evan McMullin\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(results.values)\n",
+    "print(results.index)\n",
+    "print(results.values[0])\n",
+    "print(results.values[1])\n",
+    "print(results.index[0])\n",
+    "print(results.index[1])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "application/vnd.plotly.v1+json": {
+       "config": {
+        "plotlyServerURL": "https://plot.ly"
+       },
+       "data": [
+        {
+         "marker": {
+          "color": [
+           "blue",
+           "red",
+           "green",
+           "yellow"
+          ]
+         },
+         "type": "bar",
+         "x": [
+          "Donald Trump",
+          "Evan McMullin",
+          "Gary Johnson",
+          "Hillary Clinton",
+          "Jill Stein",
+          "[Write-in]"
+         ],
+         "y": [
+          657.0527292981805,
+          20.11685895050242,
+          43.95169082125604,
+          735.7864834756776,
+          10.31268656716418,
+          12.532120311919792
+         ]
+        }
+       ],
+       "layout": {
+        "template": {
+         "data": {
+          "bar": [
+           {
+            "error_x": {
+             "color": "#2a3f5f"
+            },
+            "error_y": {
+             "color": "#2a3f5f"
+            },
+            "marker": {
+             "line": {
+              "color": "#E5ECF6",
+              "width": 0.5
+             }
+            },
+            "type": "bar"
+           }
+          ],
+          "barpolar": [
+           {
+            "marker": {
+             "line": {
+              "color": "#E5ECF6",
+              "width": 0.5
+             }
+            },
+            "type": "barpolar"
+           }
+          ],
+          "carpet": [
+           {
+            "aaxis": {
+             "endlinecolor": "#2a3f5f",
+             "gridcolor": "white",
+             "linecolor": "white",
+             "minorgridcolor": "white",
+             "startlinecolor": "#2a3f5f"
+            },
+            "baxis": {
+             "endlinecolor": "#2a3f5f",
+             "gridcolor": "white",
+             "linecolor": "white",
+             "minorgridcolor": "white",
+             "startlinecolor": "#2a3f5f"
+            },
+            "type": "carpet"
+           }
+          ],
+          "choropleth": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "type": "choropleth"
+           }
+          ],
+          "contour": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "contour"
+           }
+          ],
+          "contourcarpet": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "type": "contourcarpet"
+           }
+          ],
+          "heatmap": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "heatmap"
+           }
+          ],
+          "heatmapgl": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "heatmapgl"
+           }
+          ],
+          "histogram": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "histogram"
+           }
+          ],
+          "histogram2d": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "histogram2d"
+           }
+          ],
+          "histogram2dcontour": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "histogram2dcontour"
+           }
+          ],
+          "mesh3d": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "type": "mesh3d"
+           }
+          ],
+          "parcoords": [
+           {
+            "line": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "parcoords"
+           }
+          ],
+          "scatter": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scatter"
+           }
+          ],
+          "scatter3d": [
+           {
+            "line": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scatter3d"
+           }
+          ],
+          "scattercarpet": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scattercarpet"
+           }
+          ],
+          "scattergeo": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scattergeo"
+           }
+          ],
+          "scattergl": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scattergl"
+           }
+          ],
+          "scattermapbox": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scattermapbox"
+           }
+          ],
+          "scatterpolar": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scatterpolar"
+           }
+          ],
+          "scatterpolargl": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scatterpolargl"
+           }
+          ],
+          "scatterternary": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scatterternary"
+           }
+          ],
+          "surface": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "surface"
+           }
+          ],
+          "table": [
+           {
+            "cells": {
+             "fill": {
+              "color": "#EBF0F8"
+             },
+             "line": {
+              "color": "white"
+             }
+            },
+            "header": {
+             "fill": {
+              "color": "#C8D4E3"
+             },
+             "line": {
+              "color": "white"
+             }
+            },
+            "type": "table"
+           }
+          ]
+         },
+         "layout": {
+          "annotationdefaults": {
+           "arrowcolor": "#2a3f5f",
+           "arrowhead": 0,
+           "arrowwidth": 1
+          },
+          "colorscale": {
+           "diverging": [
+            [
+             0,
+             "#8e0152"
+            ],
+            [
+             0.1,
+             "#c51b7d"
+            ],
+            [
+             0.2,
+             "#de77ae"
+            ],
+            [
+             0.3,
+             "#f1b6da"
+            ],
+            [
+             0.4,
+             "#fde0ef"
+            ],
+            [
+             0.5,
+             "#f7f7f7"
+            ],
+            [
+             0.6,
+             "#e6f5d0"
+            ],
+            [
+             0.7,
+             "#b8e186"
+            ],
+            [
+             0.8,
+             "#7fbc41"
+            ],
+            [
+             0.9,
+             "#4d9221"
+            ],
+            [
+             1,
+             "#276419"
+            ]
+           ],
+           "sequential": [
+            [
+             0,
+             "#0d0887"
+            ],
+            [
+             0.1111111111111111,
+             "#46039f"
+            ],
+            [
+             0.2222222222222222,
+             "#7201a8"
+            ],
+            [
+             0.3333333333333333,
+             "#9c179e"
+            ],
+            [
+             0.4444444444444444,
+             "#bd3786"
+            ],
+            [
+             0.5555555555555556,
+             "#d8576b"
+            ],
+            [
+             0.6666666666666666,
+             "#ed7953"
+            ],
+            [
+             0.7777777777777778,
+             "#fb9f3a"
+            ],
+            [
+             0.8888888888888888,
+             "#fdca26"
+            ],
+            [
+             1,
+             "#f0f921"
+            ]
+           ],
+           "sequentialminus": [
+            [
+             0,
+             "#0d0887"
+            ],
+            [
+             0.1111111111111111,
+             "#46039f"
+            ],
+            [
+             0.2222222222222222,
+             "#7201a8"
+            ],
+            [
+             0.3333333333333333,
+             "#9c179e"
+            ],
+            [
+             0.4444444444444444,
+             "#bd3786"
+            ],
+            [
+             0.5555555555555556,
+             "#d8576b"
+            ],
+            [
+             0.6666666666666666,
+             "#ed7953"
+            ],
+            [
+             0.7777777777777778,
+             "#fb9f3a"
+            ],
+            [
+             0.8888888888888888,
+             "#fdca26"
+            ],
+            [
+             1,
+             "#f0f921"
+            ]
+           ]
+          },
+          "colorway": [
+           "#636efa",
+           "#EF553B",
+           "#00cc96",
+           "#ab63fa",
+           "#FFA15A",
+           "#19d3f3",
+           "#FF6692",
+           "#B6E880",
+           "#FF97FF",
+           "#FECB52"
+          ],
+          "font": {
+           "color": "#2a3f5f"
+          },
+          "geo": {
+           "bgcolor": "white",
+           "lakecolor": "white",
+           "landcolor": "#E5ECF6",
+           "showlakes": true,
+           "showland": true,
+           "subunitcolor": "white"
+          },
+          "hoverlabel": {
+           "align": "left"
+          },
+          "hovermode": "closest",
+          "mapbox": {
+           "style": "light"
+          },
+          "paper_bgcolor": "white",
+          "plot_bgcolor": "#E5ECF6",
+          "polar": {
+           "angularaxis": {
+            "gridcolor": "white",
+            "linecolor": "white",
+            "ticks": ""
+           },
+           "bgcolor": "#E5ECF6",
+           "radialaxis": {
+            "gridcolor": "white",
+            "linecolor": "white",
+            "ticks": ""
+           }
+          },
+          "scene": {
+           "xaxis": {
+            "backgroundcolor": "#E5ECF6",
+            "gridcolor": "white",
+            "gridwidth": 2,
+            "linecolor": "white",
+            "showbackground": true,
+            "ticks": "",
+            "zerolinecolor": "white"
+           },
+           "yaxis": {
+            "backgroundcolor": "#E5ECF6",
+            "gridcolor": "white",
+            "gridwidth": 2,
+            "linecolor": "white",
+            "showbackground": true,
+            "ticks": "",
+            "zerolinecolor": "white"
+           },
+           "zaxis": {
+            "backgroundcolor": "#E5ECF6",
+            "gridcolor": "white",
+            "gridwidth": 2,
+            "linecolor": "white",
+            "showbackground": true,
+            "ticks": "",
+            "zerolinecolor": "white"
+           }
+          },
+          "shapedefaults": {
+           "line": {
+            "color": "#2a3f5f"
+           }
+          },
+          "ternary": {
+           "aaxis": {
+            "gridcolor": "white",
+            "linecolor": "white",
+            "ticks": ""
+           },
+           "baxis": {
+            "gridcolor": "white",
+            "linecolor": "white",
+            "ticks": ""
+           },
+           "bgcolor": "#E5ECF6",
+           "caxis": {
+            "gridcolor": "white",
+            "linecolor": "white",
+            "ticks": ""
+           }
+          },
+          "title": {
+           "x": 0.05
+          },
+          "xaxis": {
+           "automargin": true,
+           "gridcolor": "white",
+           "linecolor": "white",
+           "ticks": "",
+           "zerolinecolor": "white",
+           "zerolinewidth": 2
+          },
+          "yaxis": {
+           "automargin": true,
+           "gridcolor": "white",
+           "linecolor": "white",
+           "ticks": "",
+           "zerolinecolor": "white",
+           "zerolinewidth": 2
+          }
+         }
+        }
+       }
+      },
+      "text/html": [
+       "<div>\n",
+       "        \n",
+       "        \n",
+       "            <div id=\"9c52a997-ad75-47bc-bb8f-b12f6c29727e\" class=\"plotly-graph-div\" style=\"height:525px; width:100%;\"></div>\n",
+       "            <script type=\"text/javascript\">\n",
+       "                require([\"plotly\"], function(Plotly) {\n",
+       "                    window.PLOTLYENV=window.PLOTLYENV || {};\n",
+       "                    \n",
+       "                if (document.getElementById(\"9c52a997-ad75-47bc-bb8f-b12f6c29727e\")) {\n",
+       "                    Plotly.newPlot(\n",
+       "                        '9c52a997-ad75-47bc-bb8f-b12f6c29727e',\n",
+       "                        [{\"marker\": {\"color\": [\"blue\", \"red\", \"green\", \"yellow\"]}, \"type\": \"bar\", \"x\": [\"Donald Trump\", \"Evan McMullin\", \"Gary Johnson\", \"Hillary Clinton\", \"Jill Stein\", \"[Write-in]\"], \"y\": [657.0527292981805, 20.11685895050242, 43.95169082125604, 735.7864834756776, 10.31268656716418, 12.532120311919792]}],\n",
+       "                        {\"template\": {\"data\": {\"bar\": [{\"error_x\": {\"color\": \"#2a3f5f\"}, \"error_y\": {\"color\": \"#2a3f5f\"}, \"marker\": {\"line\": {\"color\": \"#E5ECF6\", \"width\": 0.5}}, \"type\": \"bar\"}], \"barpolar\": [{\"marker\": {\"line\": {\"color\": \"#E5ECF6\", \"width\": 0.5}}, \"type\": \"barpolar\"}], \"carpet\": [{\"aaxis\": {\"endlinecolor\": \"#2a3f5f\", \"gridcolor\": \"white\", \"linecolor\": \"white\", \"minorgridcolor\": \"white\", \"startlinecolor\": \"#2a3f5f\"}, \"baxis\": {\"endlinecolor\": \"#2a3f5f\", \"gridcolor\": \"white\", \"linecolor\": \"white\", \"minorgridcolor\": \"white\", \"startlinecolor\": \"#2a3f5f\"}, \"type\": \"carpet\"}], \"choropleth\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"type\": \"choropleth\"}], \"contour\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"contour\"}], \"contourcarpet\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"type\": \"contourcarpet\"}], \"heatmap\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"heatmap\"}], \"heatmapgl\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"heatmapgl\"}], \"histogram\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"histogram\"}], \"histogram2d\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"histogram2d\"}], \"histogram2dcontour\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"histogram2dcontour\"}], \"mesh3d\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"type\": \"mesh3d\"}], \"parcoords\": [{\"line\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"parcoords\"}], \"scatter\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scatter\"}], \"scatter3d\": [{\"line\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scatter3d\"}], \"scattercarpet\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scattercarpet\"}], \"scattergeo\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scattergeo\"}], \"scattergl\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scattergl\"}], \"scattermapbox\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scattermapbox\"}], \"scatterpolar\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scatterpolar\"}], \"scatterpolargl\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scatterpolargl\"}], \"scatterternary\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scatterternary\"}], \"surface\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"surface\"}], \"table\": [{\"cells\": {\"fill\": {\"color\": \"#EBF0F8\"}, \"line\": {\"color\": \"white\"}}, \"header\": {\"fill\": {\"color\": \"#C8D4E3\"}, \"line\": {\"color\": \"white\"}}, \"type\": \"table\"}]}, \"layout\": {\"annotationdefaults\": {\"arrowcolor\": \"#2a3f5f\", \"arrowhead\": 0, \"arrowwidth\": 1}, \"colorscale\": {\"diverging\": [[0, \"#8e0152\"], [0.1, \"#c51b7d\"], [0.2, \"#de77ae\"], [0.3, \"#f1b6da\"], [0.4, \"#fde0ef\"], [0.5, \"#f7f7f7\"], [0.6, \"#e6f5d0\"], [0.7, \"#b8e186\"], [0.8, \"#7fbc41\"], [0.9, \"#4d9221\"], [1, \"#276419\"]], \"sequential\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"sequentialminus\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]]}, \"colorway\": [\"#636efa\", \"#EF553B\", \"#00cc96\", \"#ab63fa\", \"#FFA15A\", \"#19d3f3\", \"#FF6692\", \"#B6E880\", \"#FF97FF\", \"#FECB52\"], \"font\": {\"color\": \"#2a3f5f\"}, \"geo\": {\"bgcolor\": \"white\", \"lakecolor\": \"white\", \"landcolor\": \"#E5ECF6\", \"showlakes\": true, \"showland\": true, \"subunitcolor\": \"white\"}, \"hoverlabel\": {\"align\": \"left\"}, \"hovermode\": \"closest\", \"mapbox\": {\"style\": \"light\"}, \"paper_bgcolor\": \"white\", \"plot_bgcolor\": \"#E5ECF6\", \"polar\": {\"angularaxis\": {\"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\"}, \"bgcolor\": \"#E5ECF6\", \"radialaxis\": {\"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\"}}, \"scene\": {\"xaxis\": {\"backgroundcolor\": \"#E5ECF6\", \"gridcolor\": \"white\", \"gridwidth\": 2, \"linecolor\": \"white\", \"showbackground\": true, \"ticks\": \"\", \"zerolinecolor\": \"white\"}, \"yaxis\": {\"backgroundcolor\": \"#E5ECF6\", \"gridcolor\": \"white\", \"gridwidth\": 2, \"linecolor\": \"white\", \"showbackground\": true, \"ticks\": \"\", \"zerolinecolor\": \"white\"}, \"zaxis\": {\"backgroundcolor\": \"#E5ECF6\", \"gridcolor\": \"white\", \"gridwidth\": 2, \"linecolor\": \"white\", \"showbackground\": true, \"ticks\": \"\", \"zerolinecolor\": \"white\"}}, \"shapedefaults\": {\"line\": {\"color\": \"#2a3f5f\"}}, \"ternary\": {\"aaxis\": {\"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\"}, \"baxis\": {\"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\"}, \"bgcolor\": \"#E5ECF6\", \"caxis\": {\"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\"}}, \"title\": {\"x\": 0.05}, \"xaxis\": {\"automargin\": true, \"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\", \"zerolinecolor\": \"white\", \"zerolinewidth\": 2}, \"yaxis\": {\"automargin\": true, \"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\", \"zerolinecolor\": \"white\", \"zerolinewidth\": 2}}}},\n",
+       "                        {\"responsive\": true}\n",
+       "                    ).then(function(){\n",
+       "                            \n",
+       "var gd = document.getElementById('9c52a997-ad75-47bc-bb8f-b12f6c29727e');\n",
+       "var x = new MutationObserver(function (mutations, observer) {{\n",
+       "        var display = window.getComputedStyle(gd).display;\n",
+       "        if (!display || display === 'none') {{\n",
+       "            console.log([gd, 'removed!']);\n",
+       "            Plotly.purge(gd);\n",
+       "            observer.disconnect();\n",
+       "        }}\n",
+       "}});\n",
+       "\n",
+       "// Listen for the removal of the full notebook cells\n",
+       "var notebookContainer = gd.closest('#notebook-container');\n",
+       "if (notebookContainer) {{\n",
+       "    x.observe(notebookContainer, {childList: true});\n",
+       "}}\n",
+       "\n",
+       "// Listen for the clearing of the current output cell\n",
+       "var outputEl = gd.closest('.output');\n",
+       "if (outputEl) {{\n",
+       "    x.observe(outputEl, {childList: true});\n",
+       "}}\n",
+       "\n",
+       "                        })\n",
+       "                };\n",
+       "                });\n",
+       "            </script>\n",
+       "        </div>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "# displa with plotly\n",
+    "mydata = go.Bar(\n",
+    " x =results.index,\n",
+    "y= results.values,\n",
+    "marker={'color': ['blue', 'red', 'green', 'yellow']})\n",
+    "myfigure = go.Figure([mydata])\n",
+    "myfigure"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "## group Bar Chart"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th></th>\n",
+       "      <th>votes</th>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>party</th>\n",
+       "      <th>candidate</th>\n",
+       "      <th></th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>democratic</th>\n",
+       "      <th>Hillary Clinton</th>\n",
+       "      <td>735.786483</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>green</th>\n",
+       "      <th>Jill Stein</th>\n",
+       "      <td>10.312687</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>independent</th>\n",
+       "      <th>Evan McMullin</th>\n",
+       "      <td>20.116859</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>libertarian</th>\n",
+       "      <th>Gary Johnson</th>\n",
+       "      <td>43.951691</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>republican</th>\n",
+       "      <th>Donald Trump</th>\n",
+       "      <td>657.052729</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "                                  votes\n",
+       "party       candidate                  \n",
+       "democratic  Hillary Clinton  735.786483\n",
+       "green       Jill Stein        10.312687\n",
+       "independent Evan McMullin     20.116859\n",
+       "libertarian Gary Johnson      43.951691\n",
+       "republican  Donald Trump     657.052729"
+      ]
+     },
+     "execution_count": 22,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "results2 = df.groupby(['party','candidate'])['votes'].mean()\n",
+    "# how to ascending? \n",
+    "results2 = pd.DataFrame(results2)\n",
+    "results2\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# How to rename the column"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 37,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "application/vnd.plotly.v1+json": {
+       "config": {
+        "linkText": "Export to plot.ly",
+        "plotlyServerURL": "https://plot.ly",
+        "showLink": false
+       },
+       "data": [
+        {
+         "name": "The republican party",
+         "type": "bar",
+         "x": [
+          "Donald Trump"
+         ],
+         "y": [
+          657.0527292981805
+         ]
+        },
+        {
+         "name": "The democratic party",
+         "type": "bar",
+         "x": [
+          "Hillary Clinton"
+         ],
+         "y": [
+          735.7864834756776
+         ]
+        }
+       ],
+       "layout": {
+        "template": {
+         "data": {
+          "bar": [
+           {
+            "error_x": {
+             "color": "#2a3f5f"
+            },
+            "error_y": {
+             "color": "#2a3f5f"
+            },
+            "marker": {
+             "line": {
+              "color": "#E5ECF6",
+              "width": 0.5
+             }
+            },
+            "type": "bar"
+           }
+          ],
+          "barpolar": [
+           {
+            "marker": {
+             "line": {
+              "color": "#E5ECF6",
+              "width": 0.5
+             }
+            },
+            "type": "barpolar"
+           }
+          ],
+          "carpet": [
+           {
+            "aaxis": {
+             "endlinecolor": "#2a3f5f",
+             "gridcolor": "white",
+             "linecolor": "white",
+             "minorgridcolor": "white",
+             "startlinecolor": "#2a3f5f"
+            },
+            "baxis": {
+             "endlinecolor": "#2a3f5f",
+             "gridcolor": "white",
+             "linecolor": "white",
+             "minorgridcolor": "white",
+             "startlinecolor": "#2a3f5f"
+            },
+            "type": "carpet"
+           }
+          ],
+          "choropleth": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "type": "choropleth"
+           }
+          ],
+          "contour": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "contour"
+           }
+          ],
+          "contourcarpet": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "type": "contourcarpet"
+           }
+          ],
+          "heatmap": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "heatmap"
+           }
+          ],
+          "heatmapgl": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "heatmapgl"
+           }
+          ],
+          "histogram": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "histogram"
+           }
+          ],
+          "histogram2d": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "histogram2d"
+           }
+          ],
+          "histogram2dcontour": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "histogram2dcontour"
+           }
+          ],
+          "mesh3d": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "type": "mesh3d"
+           }
+          ],
+          "parcoords": [
+           {
+            "line": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "parcoords"
+           }
+          ],
+          "scatter": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scatter"
+           }
+          ],
+          "scatter3d": [
+           {
+            "line": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scatter3d"
+           }
+          ],
+          "scattercarpet": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scattercarpet"
+           }
+          ],
+          "scattergeo": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scattergeo"
+           }
+          ],
+          "scattergl": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scattergl"
+           }
+          ],
+          "scattermapbox": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scattermapbox"
+           }
+          ],
+          "scatterpolar": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scatterpolar"
+           }
+          ],
+          "scatterpolargl": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scatterpolargl"
+           }
+          ],
+          "scatterternary": [
+           {
+            "marker": {
+             "colorbar": {
+              "outlinewidth": 0,
+              "ticks": ""
+             }
+            },
+            "type": "scatterternary"
+           }
+          ],
+          "surface": [
+           {
+            "colorbar": {
+             "outlinewidth": 0,
+             "ticks": ""
+            },
+            "colorscale": [
+             [
+              0,
+              "#0d0887"
+             ],
+             [
+              0.1111111111111111,
+              "#46039f"
+             ],
+             [
+              0.2222222222222222,
+              "#7201a8"
+             ],
+             [
+              0.3333333333333333,
+              "#9c179e"
+             ],
+             [
+              0.4444444444444444,
+              "#bd3786"
+             ],
+             [
+              0.5555555555555556,
+              "#d8576b"
+             ],
+             [
+              0.6666666666666666,
+              "#ed7953"
+             ],
+             [
+              0.7777777777777778,
+              "#fb9f3a"
+             ],
+             [
+              0.8888888888888888,
+              "#fdca26"
+             ],
+             [
+              1,
+              "#f0f921"
+             ]
+            ],
+            "type": "surface"
+           }
+          ],
+          "table": [
+           {
+            "cells": {
+             "fill": {
+              "color": "#EBF0F8"
+             },
+             "line": {
+              "color": "white"
+             }
+            },
+            "header": {
+             "fill": {
+              "color": "#C8D4E3"
+             },
+             "line": {
+              "color": "white"
+             }
+            },
+            "type": "table"
+           }
+          ]
+         },
+         "layout": {
+          "annotationdefaults": {
+           "arrowcolor": "#2a3f5f",
+           "arrowhead": 0,
+           "arrowwidth": 1
+          },
+          "colorscale": {
+           "diverging": [
+            [
+             0,
+             "#8e0152"
+            ],
+            [
+             0.1,
+             "#c51b7d"
+            ],
+            [
+             0.2,
+             "#de77ae"
+            ],
+            [
+             0.3,
+             "#f1b6da"
+            ],
+            [
+             0.4,
+             "#fde0ef"
+            ],
+            [
+             0.5,
+             "#f7f7f7"
+            ],
+            [
+             0.6,
+             "#e6f5d0"
+            ],
+            [
+             0.7,
+             "#b8e186"
+            ],
+            [
+             0.8,
+             "#7fbc41"
+            ],
+            [
+             0.9,
+             "#4d9221"
+            ],
+            [
+             1,
+             "#276419"
+            ]
+           ],
+           "sequential": [
+            [
+             0,
+             "#0d0887"
+            ],
+            [
+             0.1111111111111111,
+             "#46039f"
+            ],
+            [
+             0.2222222222222222,
+             "#7201a8"
+            ],
+            [
+             0.3333333333333333,
+             "#9c179e"
+            ],
+            [
+             0.4444444444444444,
+             "#bd3786"
+            ],
+            [
+             0.5555555555555556,
+             "#d8576b"
+            ],
+            [
+             0.6666666666666666,
+             "#ed7953"
+            ],
+            [
+             0.7777777777777778,
+             "#fb9f3a"
+            ],
+            [
+             0.8888888888888888,
+             "#fdca26"
+            ],
+            [
+             1,
+             "#f0f921"
+            ]
+           ],
+           "sequentialminus": [
+            [
+             0,
+             "#0d0887"
+            ],
+            [
+             0.1111111111111111,
+             "#46039f"
+            ],
+            [
+             0.2222222222222222,
+             "#7201a8"
+            ],
+            [
+             0.3333333333333333,
+             "#9c179e"
+            ],
+            [
+             0.4444444444444444,
+             "#bd3786"
+            ],
+            [
+             0.5555555555555556,
+             "#d8576b"
+            ],
+            [
+             0.6666666666666666,
+             "#ed7953"
+            ],
+            [
+             0.7777777777777778,
+             "#fb9f3a"
+            ],
+            [
+             0.8888888888888888,
+             "#fdca26"
+            ],
+            [
+             1,
+             "#f0f921"
+            ]
+           ]
+          },
+          "colorway": [
+           "#636efa",
+           "#EF553B",
+           "#00cc96",
+           "#ab63fa",
+           "#FFA15A",
+           "#19d3f3",
+           "#FF6692",
+           "#B6E880",
+           "#FF97FF",
+           "#FECB52"
+          ],
+          "font": {
+           "color": "#2a3f5f"
+          },
+          "geo": {
+           "bgcolor": "white",
+           "lakecolor": "white",
+           "landcolor": "#E5ECF6",
+           "showlakes": true,
+           "showland": true,
+           "subunitcolor": "white"
+          },
+          "hoverlabel": {
+           "align": "left"
+          },
+          "hovermode": "closest",
+          "mapbox": {
+           "style": "light"
+          },
+          "paper_bgcolor": "white",
+          "plot_bgcolor": "#E5ECF6",
+          "polar": {
+           "angularaxis": {
+            "gridcolor": "white",
+            "linecolor": "white",
+            "ticks": ""
+           },
+           "bgcolor": "#E5ECF6",
+           "radialaxis": {
+            "gridcolor": "white",
+            "linecolor": "white",
+            "ticks": ""
+           }
+          },
+          "scene": {
+           "xaxis": {
+            "backgroundcolor": "#E5ECF6",
+            "gridcolor": "white",
+            "gridwidth": 2,
+            "linecolor": "white",
+            "showbackground": true,
+            "ticks": "",
+            "zerolinecolor": "white"
+           },
+           "yaxis": {
+            "backgroundcolor": "#E5ECF6",
+            "gridcolor": "white",
+            "gridwidth": 2,
+            "linecolor": "white",
+            "showbackground": true,
+            "ticks": "",
+            "zerolinecolor": "white"
+           },
+           "zaxis": {
+            "backgroundcolor": "#E5ECF6",
+            "gridcolor": "white",
+            "gridwidth": 2,
+            "linecolor": "white",
+            "showbackground": true,
+            "ticks": "",
+            "zerolinecolor": "white"
+           }
+          },
+          "shapedefaults": {
+           "line": {
+            "color": "#2a3f5f"
+           }
+          },
+          "ternary": {
+           "aaxis": {
+            "gridcolor": "white",
+            "linecolor": "white",
+            "ticks": ""
+           },
+           "baxis": {
+            "gridcolor": "white",
+            "linecolor": "white",
+            "ticks": ""
+           },
+           "bgcolor": "#E5ECF6",
+           "caxis": {
+            "gridcolor": "white",
+            "linecolor": "white",
+            "ticks": ""
+           }
+          },
+          "title": {
+           "x": 0.05
+          },
+          "xaxis": {
+           "automargin": true,
+           "gridcolor": "white",
+           "linecolor": "white",
+           "ticks": "",
+           "zerolinecolor": "white",
+           "zerolinewidth": 2
+          },
+          "yaxis": {
+           "automargin": true,
+           "gridcolor": "white",
+           "linecolor": "white",
+           "ticks": "",
+           "zerolinecolor": "white",
+           "zerolinewidth": 2
+          }
+         }
+        },
+        "title": {
+         "text": "2016 Election"
+        },
+        "xaxis": {
+         "title": {
+          "text": "bottom line"
+         }
+        }
+       }
+      },
+      "text/html": [
+       "<div>\n",
+       "        \n",
+       "        \n",
+       "            <div id=\"382cb3f9-1c54-4e73-8859-1abb9c8f3774\" class=\"plotly-graph-div\" style=\"height:525px; width:100%;\"></div>\n",
+       "            <script type=\"text/javascript\">\n",
+       "                require([\"plotly\"], function(Plotly) {\n",
+       "                    window.PLOTLYENV=window.PLOTLYENV || {};\n",
+       "                    \n",
+       "                if (document.getElementById(\"382cb3f9-1c54-4e73-8859-1abb9c8f3774\")) {\n",
+       "                    Plotly.newPlot(\n",
+       "                        '382cb3f9-1c54-4e73-8859-1abb9c8f3774',\n",
+       "                        [{\"name\": \"The republican party\", \"type\": \"bar\", \"x\": [\"Donald Trump\"], \"y\": [657.0527292981805]}, {\"name\": \"The democratic party\", \"type\": \"bar\", \"x\": [\"Hillary Clinton\"], \"y\": [735.7864834756776]}],\n",
+       "                        {\"template\": {\"data\": {\"bar\": [{\"error_x\": {\"color\": \"#2a3f5f\"}, \"error_y\": {\"color\": \"#2a3f5f\"}, \"marker\": {\"line\": {\"color\": \"#E5ECF6\", \"width\": 0.5}}, \"type\": \"bar\"}], \"barpolar\": [{\"marker\": {\"line\": {\"color\": \"#E5ECF6\", \"width\": 0.5}}, \"type\": \"barpolar\"}], \"carpet\": [{\"aaxis\": {\"endlinecolor\": \"#2a3f5f\", \"gridcolor\": \"white\", \"linecolor\": \"white\", \"minorgridcolor\": \"white\", \"startlinecolor\": \"#2a3f5f\"}, \"baxis\": {\"endlinecolor\": \"#2a3f5f\", \"gridcolor\": \"white\", \"linecolor\": \"white\", \"minorgridcolor\": \"white\", \"startlinecolor\": \"#2a3f5f\"}, \"type\": \"carpet\"}], \"choropleth\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"type\": \"choropleth\"}], \"contour\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"contour\"}], \"contourcarpet\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"type\": \"contourcarpet\"}], \"heatmap\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"heatmap\"}], \"heatmapgl\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"heatmapgl\"}], \"histogram\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"histogram\"}], \"histogram2d\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"histogram2d\"}], \"histogram2dcontour\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"histogram2dcontour\"}], \"mesh3d\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"type\": \"mesh3d\"}], \"parcoords\": [{\"line\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"parcoords\"}], \"scatter\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scatter\"}], \"scatter3d\": [{\"line\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scatter3d\"}], \"scattercarpet\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scattercarpet\"}], \"scattergeo\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scattergeo\"}], \"scattergl\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scattergl\"}], \"scattermapbox\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scattermapbox\"}], \"scatterpolar\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scatterpolar\"}], \"scatterpolargl\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scatterpolargl\"}], \"scatterternary\": [{\"marker\": {\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}}, \"type\": \"scatterternary\"}], \"surface\": [{\"colorbar\": {\"outlinewidth\": 0, \"ticks\": \"\"}, \"colorscale\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"type\": \"surface\"}], \"table\": [{\"cells\": {\"fill\": {\"color\": \"#EBF0F8\"}, \"line\": {\"color\": \"white\"}}, \"header\": {\"fill\": {\"color\": \"#C8D4E3\"}, \"line\": {\"color\": \"white\"}}, \"type\": \"table\"}]}, \"layout\": {\"annotationdefaults\": {\"arrowcolor\": \"#2a3f5f\", \"arrowhead\": 0, \"arrowwidth\": 1}, \"colorscale\": {\"diverging\": [[0, \"#8e0152\"], [0.1, \"#c51b7d\"], [0.2, \"#de77ae\"], [0.3, \"#f1b6da\"], [0.4, \"#fde0ef\"], [0.5, \"#f7f7f7\"], [0.6, \"#e6f5d0\"], [0.7, \"#b8e186\"], [0.8, \"#7fbc41\"], [0.9, \"#4d9221\"], [1, \"#276419\"]], \"sequential\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]], \"sequentialminus\": [[0.0, \"#0d0887\"], [0.1111111111111111, \"#46039f\"], [0.2222222222222222, \"#7201a8\"], [0.3333333333333333, \"#9c179e\"], [0.4444444444444444, \"#bd3786\"], [0.5555555555555556, \"#d8576b\"], [0.6666666666666666, \"#ed7953\"], [0.7777777777777778, \"#fb9f3a\"], [0.8888888888888888, \"#fdca26\"], [1.0, \"#f0f921\"]]}, \"colorway\": [\"#636efa\", \"#EF553B\", \"#00cc96\", \"#ab63fa\", \"#FFA15A\", \"#19d3f3\", \"#FF6692\", \"#B6E880\", \"#FF97FF\", \"#FECB52\"], \"font\": {\"color\": \"#2a3f5f\"}, \"geo\": {\"bgcolor\": \"white\", \"lakecolor\": \"white\", \"landcolor\": \"#E5ECF6\", \"showlakes\": true, \"showland\": true, \"subunitcolor\": \"white\"}, \"hoverlabel\": {\"align\": \"left\"}, \"hovermode\": \"closest\", \"mapbox\": {\"style\": \"light\"}, \"paper_bgcolor\": \"white\", \"plot_bgcolor\": \"#E5ECF6\", \"polar\": {\"angularaxis\": {\"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\"}, \"bgcolor\": \"#E5ECF6\", \"radialaxis\": {\"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\"}}, \"scene\": {\"xaxis\": {\"backgroundcolor\": \"#E5ECF6\", \"gridcolor\": \"white\", \"gridwidth\": 2, \"linecolor\": \"white\", \"showbackground\": true, \"ticks\": \"\", \"zerolinecolor\": \"white\"}, \"yaxis\": {\"backgroundcolor\": \"#E5ECF6\", \"gridcolor\": \"white\", \"gridwidth\": 2, \"linecolor\": \"white\", \"showbackground\": true, \"ticks\": \"\", \"zerolinecolor\": \"white\"}, \"zaxis\": {\"backgroundcolor\": \"#E5ECF6\", \"gridcolor\": \"white\", \"gridwidth\": 2, \"linecolor\": \"white\", \"showbackground\": true, \"ticks\": \"\", \"zerolinecolor\": \"white\"}}, \"shapedefaults\": {\"line\": {\"color\": \"#2a3f5f\"}}, \"ternary\": {\"aaxis\": {\"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\"}, \"baxis\": {\"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\"}, \"bgcolor\": \"#E5ECF6\", \"caxis\": {\"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\"}}, \"title\": {\"x\": 0.05}, \"xaxis\": {\"automargin\": true, \"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\", \"zerolinecolor\": \"white\", \"zerolinewidth\": 2}, \"yaxis\": {\"automargin\": true, \"gridcolor\": \"white\", \"linecolor\": \"white\", \"ticks\": \"\", \"zerolinecolor\": \"white\", \"zerolinewidth\": 2}}}, \"title\": {\"text\": \"2016 Election\"}, \"xaxis\": {\"title\": {\"text\": \"bottom line\"}}},\n",
+       "                        {\"responsive\": true}\n",
+       "                    ).then(function(){\n",
+       "                            \n",
+       "var gd = document.getElementById('382cb3f9-1c54-4e73-8859-1abb9c8f3774');\n",
+       "var x = new MutationObserver(function (mutations, observer) {{\n",
+       "        var display = window.getComputedStyle(gd).display;\n",
+       "        if (!display || display === 'none') {{\n",
+       "            console.log([gd, 'removed!']);\n",
+       "            Plotly.purge(gd);\n",
+       "            observer.disconnect();\n",
+       "        }}\n",
+       "}});\n",
+       "\n",
+       "// Listen for the removal of the full notebook cells\n",
+       "var notebookContainer = gd.closest('#notebook-container');\n",
+       "if (notebookContainer) {{\n",
+       "    x.observe(notebookContainer, {childList: true});\n",
+       "}}\n",
+       "\n",
+       "// Listen for the clearing of the current output cell\n",
+       "var outputEl = gd.closest('.output');\n",
+       "if (outputEl) {{\n",
+       "    x.observe(outputEl, {childList: true});\n",
+       "}}\n",
+       "\n",
+       "                        })\n",
+       "                };\n",
+       "                });\n",
+       "            </script>\n",
+       "        </div>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "mydata1 = go.Bar(x = results2.loc['republican'].index,\n",
+    "                y = results2.loc['republican']['votes'],\n",
+    "               name = 'The republican party', )\n",
+    "mydata2 = go.Bar(x = results2.loc['democratic'].index,\n",
+    "                y = results2.loc['democratic']['votes'],\n",
+    "               name = 'The democratic party' \n",
+    "                )\n",
+    "mylayout = go.Layout(title = '2016 Election',\n",
+    "                    xaxis = dict(title='bottom line'))\n",
+    "\n",
+    "fig=go.Figure(data=[mydata1,mydata2], layout=mylayout)\n",
+    "iplot(fig)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([657.0527293 ,  20.11685895,  43.95169082, 735.78648348,\n",
+       "        10.31268657,  12.53212031])"
+      ]
+     },
+     "execution_count": 27,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "results.values"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.7.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
