@@ -9,7 +9,7 @@ import pickle
 ########### Initiate the app
 app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
 server = app.server
-app.title='knn'
+app.title='Insurance quote'
 
 ########### Set up the layout
 app.layout = html.Div(children=[
@@ -81,14 +81,15 @@ app.layout = html.Div(children=[
                Input('k-drop-3','value')
                ])
 def my_funcky_function(value0,value1,k1,k2,k3):
-    # read in the chosen model
-    file = open(f'final_model.pkl', 'rb')
-    model = pickle.load(file)
-    file.close()
-# define the new observation
-    new_obs=[[value0,value1,k1,k2,k3]]
-    my_prediction = model.predict(new_obs)
-    return f'Your quote is : ${my_prediction}'
+#     # read in the chosen model
+#     file = open('final_model.pkl', 'rb')
+#     model = pickle.load(file)
+#     file.close()
+# # define the new observation
+#     new_obs=[[value0,value1,k1,k2,k3]]
+#     my_prediction = model.predict(new_obs)
+#     return f'Your quote is : ${my_prediction}'
+    return 'this is a test'
 ############ Execute the app
 if __name__ == '__main__':
     app.run_server(debug=True)
