@@ -65,5 +65,5 @@ tab_2_layout = html.Div(children=[
                           html.Div(id='user-inputs-box', style={'text-align':'center','fontSize':18}),
                           html.Div(id='final_prediction', style={'color':'red','text-align':'center','fontSize':18})
                       ],className='twelve columns'),
-                  html.A('Code on Github', href='https://github.com/ylcgu/insurance_proj/'),
+
 ])
