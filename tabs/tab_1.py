@@ -24,7 +24,7 @@ myfigure = go.Figure([mydata],mylayout)
 myfigure
 
 
-results2= df.groupby(["sex", "smoker"])["expenses"].count().sort_values(ascending=False)
+results2= df.groupby(["sex", "smoker"])["expenses"].mean().sort_values(ascending=False)
 results2 = pd.DataFrame(results2)
 results2
 #
@@ -38,7 +38,7 @@ mydata3 = go.Bar(x = results2.loc['male'].index,
 # mydata4 = go.Bar(x = results2.loc['Shared room'].index,
 #                   y = results2.loc['Shared room']['room'],
 #                  name = 'Shared room', )
-mylayout2 = go.Layout(title = 'Insurance rate by gender and DC areas',
+mylayout2 = go.Layout(title = 'Smokers of the insurance rate by gender',
                       xaxis= dict(title='Areas in D.C.'),
                       yaxis= dict(title='Insurance rates')
                       )
