@@ -6,14 +6,9 @@ from dash.dependencies import Input, Output, State
 import pandas as pd
 
 ########### Define your variables ######
-myheading = "Insurance rates vary from people "
-tabtitle = 'Look at our visualization'
-filename = '../insurance.csv'
-sourceurl = 'http://www.sci.csueastbay.edu/~esuess/stat6620/#week-6'
-githublink = 'https://github.com/ylcgu/insurance_proj'
 #
 # ########### Set up the data
-df = pd.read_csv(filename)
+df = pd.read_csv('insurance.csv')
 #
 result1= df.groupby(['sex'])['expenses'].mean().sort_values(ascending=False)
 
@@ -52,13 +47,12 @@ myfigure2=go.Figure(data=[mydata2,mydata3],layout=mylayout2)
 myfigure2
 
 ########### Initiate the app
-app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
-server = app.server
-app.title='Data visualization'
+# app = dash.Dash(__name__, external_stylesheets=['https://codepen.io/chriddyp/pen/bWLwgP.css'])
+# server = app.server
+# app.title='Data visualization'
 
 ########### Set up the layout
-app.layout = html.Div(children=[
-    html.H1(myheading),
+tab_1_layout = html.Div(children=[
     dcc.Graph(
         id='figure-1',
         figure=myfigure
@@ -67,12 +61,5 @@ app.layout = html.Div(children=[
         id='figure-2',
         figure=myfigure2
     ),
-    html.A('Code on Github', href=githublink),
-    html.Br(),
-    html.A("Data Source", href=sourceurl),
     ]
 )
-
-############ Execute the app
-if __name__ == '__main__':
-    app.run_server(debug=True)
