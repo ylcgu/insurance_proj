@@ -27,7 +27,8 @@ app.layout = html.Div([
         dcc.Tab(label='Data visualization', value='tab-1-template'),
         dcc.Tab(label='Rates quote', value='tab-2-template'),
     ]),
-    html.Div(id='tabs-content-template')
+    html.Div(id='tabs-content-template'),
+    html.A('View code on github', href='https://github.com/ylcgu/insurance_proj'),
 ])
 
 
